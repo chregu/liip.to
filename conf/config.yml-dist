@@ -17,5 +17,7 @@ default: &default
     
     db:
         default:
-            driver: mdb2
-            dsn: mysql://dbuser@localhost/example
+            driver: pdo
+            dsn: mysql:host=localhost;dbname=liipto
+            user: root
+            
