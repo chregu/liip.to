@@ -19,6 +19,10 @@
 	                
 	                url: <input name="url"/>
 	            </form>
+	            
+	            <p>
+	            <a href="javascript:window.location='http://liip.to/api/txt/?url='+encodeURIComponent(window.location);">Liip.to this</a> Bookmarklet
+	            </p>
 	        </body>
         </html>
         
