@@ -46,10 +46,22 @@ class api_command_liipto extends api_command {
 	}
 	
 	protected function getShortCode($url,$lconly = false) {
+	    // if no /, it's not a real URL :)
+	    if (strpos($url,'/') === false) {
+           return $url; 
+        }
+        
+	    
+	    $url = $this->normalizeUrl($url);
+	    //check if it's an own URL :)
+	    $host = 'http://'.$this->request->getHost();
+	    if (strpos($url,$host) === 0) {
+            return substr($url, strlen($host)+1);
+	    }
+	    
 	    if (!$this->db) {
 	       $this->db =  api_db::factory("default");
 	    }
-        $url = $this->normalizeUrl($url);
         $urlmd5 = md5 ( $url );
         //check if a code exists
         $code = $this->getCodeFromDBWithMD5($urlmd5);
