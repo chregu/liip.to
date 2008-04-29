@@ -15,10 +15,11 @@ class api_command_liipto extends api_command {
 		} else {
 		  $this->url = $attribs['url'];
 		}
+		$this->url = trim($this->url);
 	}
 	
 	public function redirect() {
-	    $url = $this->getUrlFromCode(trim($this->url));;
+	    $url = $this->getUrlFromCode($this->url);;
 	    if ($url) {
 	       $this->data = $url;
 	    } else {
@@ -28,7 +29,9 @@ class api_command_liipto extends api_command {
 	}
 	
 	public function create() {
-	    
+	    if (empty($this->url)) {
+	        die("empty url");
+	    }
        $this->data = 'http://'.$this->request->getHost() . '/'. $this->getShortCode($this->url);
 	}
 	
@@ -104,8 +107,7 @@ class api_command_liipto extends api_command {
 	
 	
 	protected function normalizeUrl($url) {
-	    $url = trim($url);
-        if (strpos($url,'https:') === 0) {
+	    if (strpos($url,'https:') === 0) {
             $url = preg_replace("#https:/+#","",$url);
             $url = 'https://'.$url;
         } else {

@@ -14,7 +14,13 @@
 	        </head>
 	        <body>
 	            <h1><i18n:text>WelcomeText</i18n:text></h1>
+	            
+	            <form method="get" action="/api/txt/">
+	                
+	                url: <input name="url"/>
+	            </form>
 	        </body>
         </html>
+        
     </xsl:template>
 </xsl:stylesheet>
