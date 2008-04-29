@@ -15,7 +15,6 @@ class api_command_liipto extends api_command {
 		} else {
 		  $this->url = $attribs['url'];
 		}
-        		
 	}
 	
 	public function redirect() {
