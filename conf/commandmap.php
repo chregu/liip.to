@@ -8,6 +8,13 @@ $m->route('/api/txt/*url')->config(array(
 
 ));
 
+$m->route('/api/qr/*url')->config(array( 
+    'command'=>'liipto',
+    'method' => 'create',
+    'view' => array('class' => 'qr')
+
+));
+
 $m->route('/:url')
   ->config(array(
     'command' => 'liipto',
