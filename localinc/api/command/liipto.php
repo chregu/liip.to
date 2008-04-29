@@ -51,13 +51,13 @@ class api_command_liipto extends api_command {
         $urlmd5 = md5 ( $url );
         //check if a code exists
         $code = $this->getCodeFromDBWithMD5($urlmd5);
-        
         //if not create one
         if (!$code) {
             // insert url
+            
             $this->insertUrl($url,$lconly,$urlmd5);
             // get code again (if another code with the same url was inserted in the meantime...)
-            $code = $this->getCode($urlmd5);
+            $code = $this->getCodeFromDBWithMD5($urlmd5);
             
         }
         return $code;
@@ -93,7 +93,7 @@ class api_command_liipto extends api_command {
 	
 	protected function getCodeFromDB($url) {
 	    $urlmd5 = md5($url);
-        $this->getCodeFromDBWithMD5($urlmd5);   
+        return $this->getCodeFromDBWithMD5($urlmd5);   
 	}
 	
 	protected function getCodeFromDBWithMD5($urlmd5) {
@@ -113,7 +113,6 @@ class api_command_liipto extends api_command {
             $url = preg_replace("#http:/+#","",$url);
             $url = 'http://'.$url;
         }
-        
         return $url;
         
         

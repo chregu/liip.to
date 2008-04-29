@@ -9,12 +9,11 @@ class api_views_redirect extends api_views_common {
      */
     protected function setHeaders() {
         parent::setHeaders();
-     //   $this->response->setContentType('text/plain');
+        $this->response->setContentType('text/plain');
     }
     
     public function dispatch($data, $exceptions = null) {
-       header("Location: $data"); 
-         
+        $this->response->redirect($data);   
     }
     
     

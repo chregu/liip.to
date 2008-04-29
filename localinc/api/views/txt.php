@@ -8,8 +8,8 @@ class api_views_txt extends api_views_common {
      * Sends text/plain Content-type
      */
     protected function setHeaders() {
+        $this->response->setContentType('text/plain');
         parent::setHeaders();
-     //   $this->response->setContentType('text/plain');
     }
     
     public function dispatch($data, $exceptions = null) {
@@ -18,7 +18,10 @@ class api_views_txt extends api_views_common {
              var_dump($data);   
         }
         print $data;  
-         
+        $this->setHeaders();
+        
+        $this->response->send();
+        
     }
     
     
