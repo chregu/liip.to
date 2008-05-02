@@ -1,4 +1,4 @@
-live: 
+live: &live-fixed
     <<: *default
     db:
         default:
