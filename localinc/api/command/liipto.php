@@ -29,6 +29,15 @@ class api_command_liipto extends api_command {
 	      
 	}
 	
+	public function checkCode() {
+	  $this->db =  api_db::factory("default");
+	  if ($this->codeExists($this->url)) {
+	       $this->data = 'true';
+	  } else {
+	       $this->data = 'false';
+	  }
+	}
+
 	public function create() {
 	    if (empty($this->url)) {
 	        die("empty url");

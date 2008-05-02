@@ -15,6 +15,14 @@ $m->route('/api/qr/*url')->config(array(
 
 ));
 
+
+$m->route('/api/chk/*url')->config(array( 
+    'command'=>'liipto',
+    'method' => 'checkCode',
+    'view' => array('class' => 'txt')
+
+));
+
 $m->route('/:url')
   ->config(array(
     'command' => 'liipto',

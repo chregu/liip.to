@@ -22,13 +22,19 @@
 	            <form method="get" action="/api/txt/">
 	                
 	                url*: <textarea cols="50" rows="5" name="url"><xsl:value-of select="$url"/><xsl:text> </xsl:text></textarea><br/>
-	                code:<input name="code"/><br/>
+	                code (optional):<input id="code" name="code"/><br/>
 	                <input type="submit"/>
 	            </form>
 	            
 	            <p>
 	            <a href="javascript:window.location='http://liip.to/?url='+encodeURIComponent(window.location);">Liip.to this</a> Bookmarklet
 	            </p>
+	            
+	            <script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/yahoo-dom-event/yahoo-dom-event.js"></script> 
+                <script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/connection/connection-min.js"></script> 
+                <script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/json/json-min.js"></script>
+                <script type="text/javascript" src="{$webrootStatic}js/liipto.js"></script>
+                
 	        </body>
         </html>
         
