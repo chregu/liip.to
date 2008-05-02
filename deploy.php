@@ -16,10 +16,30 @@ mkdir($liveVersionPath);
 //FIXME... stage and live do not have the same config...
 full_copy($oriPath ."/conf", $liveVersionPath ."/conf");
 
+
+
 //inc 
-full_copy($oriPath ."/inc", $liveVersionPath ."/inc");
+mkdir($liveVersionPath.'/inc',0777);
+if (file_exists($oriPath ."/inc/lib")) {
+    full_copy($oriPath ."/inc/lib", $liveVersionPath ."/inc");
+}
+full_copy($oriPath ."/inc", $liveVersionPath ."/inc",array($oriPath ."/inc/lib"));
+
+//ext
+foreach (glob($oriPath . '/ext/*/*') as $dir) {
+    if (basename($dir) == 'lib') {
+        full_copy($dir,$liveVersionPath . '/inc/');
+    } else {
+        full_copy($dir,$liveVersionPath . '/inc/'.basename($dir),array($dir.'/lib'));
+    }
+}
+
 
 //localinc 
+mkdir($liveVersionPath.'/localinc',0777);
+if (file_exists($oriPath ."/localinc/lib")) {
+    full_copy($oriPath ."/localinc/lib", $liveVersionPath ."/localinc");
+}
 full_copy($oriPath ."/localinc", $liveVersionPath ."/localinc");
 
 //themes
@@ -30,10 +50,6 @@ full_copy($oriPath ."/lang", $liveVersionPath ."/lang");
 
 //tmp
 mkdir($liveVersionPath.'/tmp',0777);
-//ext
-foreach (glob($oriPath . '/ext/*/*') as $dir) {
-    full_copy($dir,$liveVersionPath . '/inc/'.basename($dir));
-}
 
 
 file_put_contents($liveVersionPath."/conf/config.d/02-live.yml",
@@ -88,8 +104,8 @@ symlink(basename($liveVersionPath),'live');
     
 
 
-function full_copy($source, $target) {
-    print "Copying " . $source ."\n";
+function full_copy($source, $target, $exclude = array()) {
+    //print "Copying " . $source ."\n";
     if (is_dir ( $source )) {
 		@mkdir ( $target );
 		
@@ -99,10 +115,16 @@ function full_copy($source, $target) {
 			if ($entry == '.' || $entry == '..' || $entry == '.svn') {
 				continue;
 			}
-			
 			$Entry = $source . '/' . $entry;
+            
+			if (in_array($Entry,$exclude)) {
+			    print "FFFFF ";
+			    var_dump($exclude);
+			    
+			continue;
+			}
 			if (is_dir ( $Entry )) {
-				full_copy ( $Entry, $target . '/' . $entry );
+				full_copy ( $Entry, $target . '/' . $entry,$exclude );
 				continue;
 			}
 			copy ( $Entry, $target . '/' . $entry );
