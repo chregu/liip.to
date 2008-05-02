@@ -10,8 +10,9 @@ class api_command_liipto extends api_command {
     
 	public function __construct($attribs) {
 		parent::__construct ( $attribs );
-		if (!empty($_GET['url'])) {
-		    $this->url = $_GET['url'];
+	   $url = $this->request->getParam('url',null);
+		if ($url) {
+		    $this->url = $url;
 		} else {
 		  $this->url = $attribs['url'];
 		}
@@ -46,8 +47,8 @@ class api_command_liipto extends api_command {
 	}
 	
 	protected function getShortCode($url,$lconly = false) {
-	    // if no /, it's not a real URL :)
-	    if (strpos($url,'/') === false) {
+	    // if no ., it's not a real URL :)
+	    if (strpos($url,'.') === false) {
            return $url; 
         }
         

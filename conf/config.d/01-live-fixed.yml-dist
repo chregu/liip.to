@@ -7,4 +7,4 @@ live:
             user: liip_to
             pass: password   
     webpaths:
-        static: static/1/
+        static: static/

@@ -12,12 +12,11 @@
 	        <head>
 	            <title><i18n:text>PageTitle</i18n:text></title>
 	            
-	            <link rel="stylesheet" type="text/css" href="/static/yui/build/fonts/fonts-min.css" /> 
+	            <link rel="stylesheet" type="text/css" href="{$webrootStatic}yui/build/fonts/fonts-min.css" /> 
 	            
 	        </head>
 	        <body>
 	            <h1><i18n:text>WelcomeText</i18n:text></h1>
-	            
 	            <form method="get" action="/api/txt/">
 	                
 	                url: <input name="url"/>
