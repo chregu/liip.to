@@ -21,7 +21,7 @@
 	            <h1><i18n:text>WelcomeText</i18n:text></h1>
 	            <form method="get" action="/api/txt/">
 	                
-	                url*: <textarea cols="50" rows="5" name="url"><xsl:value-of select="$url"/></textarea><br/>
+	                url*: <textarea cols="50" rows="5" name="url"><xsl:value-of select="$url"/><xsl:text> </xsl:text></textarea><br/>
 	                code:<input name="code"/><br/>
 	                <input type="submit"/>
 	            </form>
