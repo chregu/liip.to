@@ -34,6 +34,7 @@ class api_command_liipto extends api_command {
 	        die("empty url");
 	    }
        $this->data = 'http://'.$this->request->getHost() . '/'. $this->getShortCode($this->url);
+       
 	}
 	
 	protected function getUrlFromCode($code) {
@@ -56,6 +57,7 @@ class api_command_liipto extends api_command {
 	    $url = $this->normalizeUrl($url);
 	    //check if it's an own URL :)
 	    $host = 'http://'.$this->request->getHost();
+        
 	    if (strpos($url,$host) === 0) {
             return substr($url, strlen($host)+1);
 	    }
@@ -86,8 +88,12 @@ class api_command_liipto extends api_command {
         $code = $this->getNextCode($lconly);
             
         $query = 'INSERT INTO urls (code,url,md5) VALUES (:code,:url,:urlmd5)';
+        
         $stm = $this->db->prepare ( $query );
-        $stm->execute ( array (':code' => $code, ':url' => $url, ':urlmd5' => $urlmd5 ) );
+        
+        if (! $stm->execute ( array (':code' => $code, ':url' => $url, ':urlmd5' => $urlmd5 ) )) {
+           die("DB Error");
+        }
         return $code;
 	}
 	
@@ -102,6 +108,11 @@ class api_command_liipto extends api_command {
 			while ( $code == strtolower ( $code ) ) {
 				$code = $this->id2url ( $this->nextId ( $tablename ), $lconly );
 			}
+		}
+		
+		$query = "SELECT code from urls where code = " . $this->db->quote($code);
+		if ($this->db->query($query)->rowCount() > 0) {
+		   $code = $this->getNextCode($lconly); 
 		}
 		return $code;
 	}
