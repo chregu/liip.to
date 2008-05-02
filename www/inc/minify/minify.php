@@ -32,6 +32,10 @@ if (!defined('MINIFY_BASE_DIR')) {
   define('MINIFY_BASE_DIR', realpath($_SERVER['DOCUMENT_ROOT']));
 }
 
+if (!defined('MINIFY_RESOLVE_REALPATH')) {
+    define('MINIFY_RESOLVE_REALPATH',true);
+}
+
 if (!defined('MINIFY_CACHE_DIR')) {
   /** Directory where compressed files will be cached. */
   define('MINIFY_CACHE_DIR', sys_get_temp_dir());
@@ -434,12 +438,17 @@ class Minify {
     }
     else {
       // Get the file's absolute path.
-      $filepath = realpath(MINIFY_BASE_DIR.'/'.$file);
+      if (MINIFY_RESOLVE_REALPATH) {
+        $filepath = realpath(MINIFY_BASE_DIR.'/'.$file);
+      } else {
+        $filepath = MINIFY_BASE_DIR.'/'.$file;
+      }
     }
 
     // Ensure that the file exists, that the path is under the base directory,
     // that the file's extension is either '.css' or '.js', and that the file is
     // actually readable.
+    
     if (!$filepath ||
         !is_file($filepath) ||
         !is_readable($filepath) ||
