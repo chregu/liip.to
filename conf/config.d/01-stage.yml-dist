@@ -1,0 +1,10 @@
+stage: 
+    <<: *default
+    db:
+        default:
+            driver: pdo
+            dsn: mysql:host=localhost;dbname=liip_to
+            user: liip_to
+            pass: pass
+    webpaths:
+        static: static/
