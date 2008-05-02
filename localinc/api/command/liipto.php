@@ -33,7 +33,8 @@ class api_command_liipto extends api_command {
 	    if (empty($this->url)) {
 	        die("empty url");
 	    }
-       $this->data = 'http://'.$this->request->getHost() . '/'. $this->getShortCode($this->url);
+	    $code = $this->request->getParam('code',null);
+       $this->data = 'http://'.$this->request->getHost() . '/'. $this->getShortCode($this->url,$code);
        
 	}
 	
@@ -47,14 +48,12 @@ class api_command_liipto extends api_command {
         return $stm->fetchColumn();
 	}
 	
-	protected function getShortCode($url,$lconly = false) {
+	protected function getShortCode($url,$usercode = null,$lconly = false) {
 	    // if no ., it's not a real URL :)
 	    if (strpos($url,'.') === false) {
            return $url; 
         }
-        
-	    
-	    $url = $this->normalizeUrl($url);
+        $url = $this->normalizeUrl($url);
 	    //check if it's an own URL :)
 	    $host = 'http://'.$this->request->getHost();
         
@@ -66,13 +65,13 @@ class api_command_liipto extends api_command {
 	       $this->db =  api_db::factory("default");
 	    }
         $urlmd5 = md5 ( $url );
+        
         //check if a code exists
         $code = $this->getCodeFromDBWithMD5($urlmd5);
         //if not create one
         if (!$code) {
             // insert url
-            
-            $this->insertUrl($url,$lconly,$urlmd5);
+            $this->insertUrl($url,$usercode,$lconly,$urlmd5);
             // get code again (if another code with the same url was inserted in the meantime...)
             $code = $this->getCodeFromDBWithMD5($urlmd5);
             
@@ -81,11 +80,13 @@ class api_command_liipto extends api_command {
 	    
 	}
 	
-	protected function insertUrl($url,$lconly,$urlmd5 = null) {
+	protected function insertUrl($url,$code = null,$lconly = false,$urlmd5 = null) {
 	    if (!$urlmd5) {
            $urlmd5 = md5($url);
         }
-        $code = $this->getNextCode($lconly);
+        if (!$code) {
+            $code = $this->getNextCode($lconly);
+        }
             
         $query = 'INSERT INTO urls (code,url,md5) VALUES (:code,:url,:urlmd5)';
         
@@ -109,12 +110,19 @@ class api_command_liipto extends api_command {
 				$code = $this->id2url ( $this->nextId ( $tablename ), $lconly );
 			}
 		}
-		
-		$query = "SELECT code from urls where code = " . $this->db->quote($code);
-		if ($this->db->query($query)->rowCount() > 0) {
-		   $code = $this->getNextCode($lconly); 
+		if ($this->codeExists($code)) {
+		    $code = $this->getNextCode($lconly);
 		}
+		
 		return $code;
+	}
+	
+	protected function codeExists($code) {
+	   $query = "SELECT code from urls where code = " . $this->db->quote($code);
+        if ($this->db->query($query)->rowCount() > 0) {
+            return true;
+        }
+        return false;
 	}
 	
 	protected function getCodeFromDB($url) {

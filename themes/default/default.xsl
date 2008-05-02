@@ -19,7 +19,8 @@
 	            <h1><i18n:text>WelcomeText</i18n:text></h1>
 	            <form method="get" action="/api/txt/">
 	                
-	                url: <input name="url"/>
+	                url*: <input name="url"/><br/>
+	                code:<input name="code"/><br/>
 	            </form>
 	            
 	            <p>
