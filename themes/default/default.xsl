@@ -6,6 +6,8 @@
         xmlns:i18n="http://apache.org/cocoon/i18n/2.1"
         exclude-result-prefixes="xhtml i18n"
         version="1.0">
+        
+        <xsl:variable name="url" select="/command/queryinfo/query/url"/>
     
     <xsl:template match="/">
         <html lang="{$lang}" xml:lang="{$lang}">
@@ -19,12 +21,13 @@
 	            <h1><i18n:text>WelcomeText</i18n:text></h1>
 	            <form method="get" action="/api/txt/">
 	                
-	                url*: <input name="url"/><br/>
+	                url*: <textarea cols="50" rows="5" name="url"><xsl:value-of select="$url"/></textarea><br/>
 	                code:<input name="code"/><br/>
+	                <input type="submit"/>
 	            </form>
 	            
 	            <p>
-	            <a href="javascript:window.location='http://liip.to/api/txt/?url='+encodeURIComponent(window.location);">Liip.to this</a> Bookmarklet
+	            <a href="javascript:window.location='http://liip.to/?url='+encodeURIComponent(window.location);">Liip.to this</a> Bookmarklet
 	            </p>
 	        </body>
         </html>

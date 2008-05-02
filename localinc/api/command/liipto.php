@@ -34,6 +34,10 @@ class api_command_liipto extends api_command {
 	        die("empty url");
 	    }
 	    $code = $this->request->getParam('code',null);
+	    if ($code) {
+	        //normalize code
+	       $code = preg_replace("#[^a-zA-Z0-9_]#","",$code);
+	   }
        $this->data = 'http://'.$this->request->getHost() . '/'. $this->getShortCode($this->url,$code);
        
 	}
