@@ -48,8 +48,12 @@ mkdir($liveVersionPath.'/www',0755);
 copy($oriPath."/www/index.php",$liveVersionPath."/www/index.php");
 copy($oriPath."/www/.htaccess",$liveVersionPath."/www/.htaccess");
 
+file_put_contents($liveVersionPath."/www/.htaccess",file_get_contents($oriPath.'/www/.htaccess-live'),FILE_APPEND); 
+
 mkdir($liveVersionPath.'/www/static/',0755);
 full_copy($oriPath ."/www/static", $liveVersionPath ."/www/static/".$version);
+
+full_copy($oriPath ."/www/inc", $liveVersionPath ."/www/inc");
 
 //link to old available version
 chdir($rootPath);
