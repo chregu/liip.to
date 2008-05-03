@@ -61,7 +61,7 @@ class JSMin {
   
   public static function minify($js) {
     $jsmin = new JSMin($js);
-    return $jsmin->jsmin();
+    return $jsmin->jsminify();
   }
 
   // -- Public Instance Methods ------------------------------------------------
@@ -164,7 +164,7 @@ class JSMin {
     return ord($c) > 126 || $c === '\\' || preg_match('/^[\w\$]$/', $c) === 1;
   }
 
-  protected function jsmin() {
+  protected function jsminify() {
     $this->a = "\n";
     $this->action(3);
 

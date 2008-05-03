@@ -177,7 +177,7 @@ class Minify {
    */
   protected static function minifyJS($js) {
     require_once dirname(__FILE__).'/lib/jsmin.php';
-    return JSMin::minifyBoth($js);
+    return JSMin::minify($js);
   }
 
   /**

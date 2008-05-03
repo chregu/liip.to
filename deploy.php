@@ -105,7 +105,7 @@ symlink(basename($liveVersionPath),'live');
 
 
 function full_copy($source, $target, $exclude = array()) {
-    //print "Copying " . $source ."\n";
+    print "Copying " . $source ."\n";
     if (is_dir ( $source )) {
 		@mkdir ( $target );
 		
