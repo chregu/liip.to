@@ -54,9 +54,9 @@ static public function generateAsGd($qrcode_data_string,$qrcode_module_size=4,$q
         
         /* ------ setting area ------ */
         define("QR_LIBS_DIR", dirname(__FILE__));
-        $path = QR_LIBS_DIR."/data"; /* You must set path to data files. */
+        $path = QR_LIBS_DIR."/qr/data"; /* You must set path to data files. */
         
-        $image_path = QR_LIBS_DIR."/image"; /* You must set path to QRcode frame images. */
+        $image_path = QR_LIBS_DIR."/qr/image"; /* You must set path to QRcode frame images. */
         
         $version_ul = 40; /* upper limit for version  */
         /* ------ setting area end ------ */
