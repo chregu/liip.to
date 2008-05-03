@@ -23,7 +23,8 @@ YAHOO.liipto.checkCode = function() {
     }
     
     var request = function() {
-        var value = YAHOO.lang.trim(d.get('code').value);
+        var value = YAHOO.lang.trim(D.get('code').value);
+
         if (value == '') {
             D.setStyle("code","background-color","white");
             return; 
@@ -41,7 +42,7 @@ YAHOO.liipto.checkCode = function() {
 
     return {
       init: function() {
-         e.addListener("code","keyup",request);
+         E.addListener("code","keyup",request);
         }
     }
 }();
