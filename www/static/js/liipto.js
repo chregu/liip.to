@@ -5,7 +5,6 @@ var D = YAHOO.util.Dom;
 
 YAHOO.namespace("liipto");
 
-
 YAHOO.liipto.checkCode = function() {
 
     var keypressTimer = null;
@@ -22,16 +21,16 @@ YAHOO.liipto.checkCode = function() {
         }
         
         codeCheckResults[o.argument.val] = result;
-    }
+    };
     
     
     var handleFailure = function(o) {
         console.log("FAILUre " + alert(o.statusText)); 
-    }
+    };
     
     var codeKeypressAsync = function() {
         YAHOO.lang.later(1,this,codeKeypress);
-    }
+    };
     
     var codeKeypress = function() {
     
@@ -45,6 +44,13 @@ YAHOO.liipto.checkCode = function() {
             YAHOO.util.Connect.abort(codeCheckRequest); 
         }
         
+        if (value === '') {
+            D.setStyle("codeOk","background-color","white");
+            D.setStyle('codeOkSpinner','visibility', 'hidden');
+            return; 
+        }
+        
+        
         if (YAHOO.lang.isUndefined(codeCheckResults[value])) { 
            D.setStyle('codeOkSpinner','visibility', 'visible');
            keypressTimer = YAHOO.lang.later(200,this,request);
@@ -57,28 +63,23 @@ YAHOO.liipto.checkCode = function() {
             }
         }
             
-    }
+    };
     
     var codeRed = function() {
         D.setStyle("codeOk","background-color","red");
-    }
+    };
     
     var codeGreen = function() {
         D.setStyle("codeOk","background-color","green");
-    }
+    };
     
     var request = function() {
         var value = YAHOO.lang.trim(D.get('code').value);
-        if (value == '') {
-            D.setStyle("codeOk","background-color","white");
-            return; 
-        }
-        
         D.setStyle('codeOkSpinner','visibility', 'visible');
         var sUrl = "/api/chk/" + value;
         var callback = {
-            success:handleSuccess,
-            failure:handleFailure,
+            success: handleSuccess,
+            failure: handleFailure,
             argument: {'val':value}
         };
 
@@ -87,14 +88,15 @@ YAHOO.liipto.checkCode = function() {
         }
 
         codeCheckRequest = YAHOO.util.Connect.asyncRequest('GET', sUrl, callback);
-    }
+    };
 
     return {
       init: function() {
          E.addListener("code","keyup",codeKeypressAsync);
       }
-    }
+    };
 }();
 
  
 E.onDOMReady(YAHOO.liipto.checkCode.init);
+
