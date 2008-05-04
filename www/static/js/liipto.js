@@ -1,7 +1,7 @@
 var E = YAHOO.util.Event;
 var D = YAHOO.util.Dom;
 
-
+//FIXME: Document it
 
 YAHOO.namespace("liipto");
 
@@ -36,7 +36,6 @@ YAHOO.liipto.checkCode = function() {
     var codeKeypress = function() {
     
         var value = YAHOO.lang.trim(D.get('code').value);
-        D.setStyle('codeOkSpinner','visibility', 'hidden');
         
         if (keypressTimer) {
             keypressTimer.cancel();
@@ -47,12 +46,15 @@ YAHOO.liipto.checkCode = function() {
         }
         
         if (YAHOO.lang.isUndefined(codeCheckResults[value])) { 
+           D.setStyle('codeOkSpinner','visibility', 'visible');
            keypressTimer = YAHOO.lang.later(200,this,request);
-        } else if (codeCheckResults[value]) {
-           codeRed();
         } else {
-           codeGreen();
-        }
+            D.setStyle('codeOkSpinner','visibility', 'hidden');
+            if (codeCheckResults[value]) {
+                codeRed();
+            } else {
+                codeGreen();
+            }
             
     }
     
