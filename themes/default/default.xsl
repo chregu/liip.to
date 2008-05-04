@@ -17,12 +17,17 @@
 	            <link rel="stylesheet" type="text/css" href="{$webrootStatic}yui/build/fonts/fonts-min.css" /> 
 	            
 	        </head>
-	        <body>
+	        <body >
 	            <h1><i18n:text>WelcomeText</i18n:text></h1>
 	            <form method="get" action="/api/txt/">
 	                
 	                url*: <textarea cols="50" rows="5" name="url"><xsl:value-of select="$url"/><xsl:text> </xsl:text></textarea><br/>
-	                code (optional):<input id="code" name="code"/><br/>
+	                code (optional):<input id="code" name="code"/>
+	                
+	                <span style="background-color: white; font-size:18px;" id="codeOk">
+	                <img id="codeOkSpinner" style="visibility: hidden" src="{$webrootStatic}yui/build/assets/skins/sam/wait.gif"/>
+	                </span>
+	                <br/>
 	                <input type="submit"/>
 	            </form>
 	            
