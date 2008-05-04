@@ -55,6 +55,7 @@ YAHOO.liipto.checkCode = function() {
             } else {
                 codeGreen();
             }
+        }
             
     }
     
