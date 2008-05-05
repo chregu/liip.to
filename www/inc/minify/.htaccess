@@ -1,3 +1,0 @@
-SetOutputFilter DEFLATE
-ExpiresDefault  "access plus 3 days"
-FileETag none    
