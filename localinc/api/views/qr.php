@@ -18,7 +18,7 @@ class api_views_qr extends api_views_common {
              var_dump($data);   
         } else {
             $this->setHeaders();
-             qr::generateAsOutput($data,4,'png');  
+             lx_qr::generateAsOutput($data,4,'png');  
         
             $this->response->send();
         }
