@@ -1,7 +1,7 @@
 <?php
 
 
-class qr {
+class lx_qr {
 static public function generateAsGd($qrcode_data_string,$qrcode_module_size=4,$qrcode_image_type = 'png', $qrcode_error_correct = 'Q') {
         
         /*
