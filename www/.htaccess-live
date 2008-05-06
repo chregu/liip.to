@@ -18,3 +18,4 @@ FileETag none
 
 SetEnvIfNoCase Request_URI .(?:gif|jpe?g|png|pdf)$ no-gzip dont-vary
     
+php_value display_errors Off
