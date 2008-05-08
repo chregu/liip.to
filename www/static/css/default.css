@@ -31,3 +31,34 @@ padding: 2em;
     padding-top: 0em;
     margin: 0.5em;
 }
+
+
+#codeOk {
+background-color: white; 
+font-size:1.5em;
+clear: none;
+float: right;
+width: 1em;
+margin-top: 6px;
+}
+
+form div {
+clear: left;
+width: 35em;
+
+}
+input, textarea {
+    border: 1px solid black;
+margin-top: 0.5em;    
+}
+
+
+
+form label {
+    display:block;
+    float:left;
+    margin:2px 0pt 5px;
+    padding:3px 5px;
+text-align:right;
+width:20em;
+    }

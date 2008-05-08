@@ -38,17 +38,31 @@
 							<div class="yui-b">
 								<form method="get" action="/api/txt/">
 									
-									url*: <textarea cols="50" rows="5" name="url"><xsl:value-of select="$url"/>
+									<div class="required">
+										<label for="url">url*:</label>
+										<textarea id="url" class="inputTextarea" cols="50" rows="5" name="url">
 										<xsl:text> </xsl:text>
-									</textarea>
-									<br/>
-									code (optional):<input id="code" name="code"/>
+										</textarea>
+										<!--<small>Must be 250 characters or less.</small>-->
+									</div>
 									
-									<span style="background-color: white; font-size:18px;" id="codeOk">
-										<img id="codeOkSpinner" style="visibility: hidden" src="{$webrootStatic}yui/build/assets/skins/sam/wait.gif"/>
-									</span>
-									<br/>
-									<input type="submit"/>
+									
+									<div class="optional">
+										<label for="code">code (optional):
+										</label>
+										<div  id="codeOk">
+											<img id="codeOkSpinner" style="visibility: hidden" src="{$webroot_yui}build/assets/skins/sam/wait.gif"/>
+										</div>                                      
+										<input id="code" name="code" class="inputText" type="text" value="" maxlength="20" size="10"/>
+										
+										<!-- <small>We will never sell or disclose your email address to anyone. Once your account is setup, you may add additional email addresses.</small>
+										-->
+									</div>
+
+									<div>
+										<label><xsl:text> </xsl:text></label>
+										<input type="submit" value="Send"/>
+									</div>
 								</form>
 							</div>
 							
