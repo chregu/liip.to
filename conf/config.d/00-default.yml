@@ -20,4 +20,7 @@ default: &default
             driver: pdo
             dsn: mysql:host=localhost;dbname=liipto
             user: root
+    webpaths: 
+        static: static/
+        yui: static/yui/
             

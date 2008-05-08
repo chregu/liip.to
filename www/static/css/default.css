@@ -1,0 +1,33 @@
+#ft {
+padding: 2em;
+    padding-top: 0.5em;
+}
+
+#bd #yui-main .yui-b {
+    border: 0px solid black;
+    border-right-width:1px;
+    padding: 2em;
+}
+#bd {
+    border: 1px solid black;
+    border-top: 0px;
+ 
+}
+
+#bd  .yui-b{
+    padding-top: 2em;
+}
+
+#hd {
+    background-color: #E9E700;
+    height: 3em;
+    border: 1px solid black;
+    color: white;
+    font-size: 200%;
+    padding-left: 1em;
+}
+
+#hd h1 {
+    padding-top: 0em;
+    margin: 0.5em;
+}

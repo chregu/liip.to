@@ -1,11 +1,11 @@
 
 RewriteCond  %{REQUEST_URI} !^.*-min   
-RewriteRule ^(.*\.(css|js))$ /inc/minify/minify.php?files=$1 [L,NC]
+RewriteRule ^(.*\.(css|js))$ /inc/minify/minifyOkapi.php?files=$1 [L,NC]
 
 
 ExpiresActive On
 ExpiresByType text/css "access plus 30 days"
-ExpiresByType application/x-javascript "access plus 3' days"
+ExpiresByType application/x-javascript "access plus 30 days"
 ExpiresByType image/gif "access plus 30 days"
 ExpiresByType image/jpeg "access plus 30 days"
 ExpiresByType image/png "access plus 30 days" 
