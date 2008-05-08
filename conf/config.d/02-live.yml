@@ -2,3 +2,4 @@ live:
     <<: *live-fixed
     webpaths:
         static: static/1/
+        yui: static/yui/

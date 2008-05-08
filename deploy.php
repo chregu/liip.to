@@ -57,6 +57,7 @@ file_put_contents($liveVersionPath."/conf/config.d/02-live.yml",
     <<: *live-fixed
     webpaths:
         static: static/$version/
+        yui: static/$version/yui/
 "
 );
 //www
