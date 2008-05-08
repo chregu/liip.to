@@ -40,7 +40,7 @@
 									
 									<div class="required">
 										<label for="url">url*:</label>
-										<textarea id="url" class="inputTextarea" cols="50" rows="5" name="url">
+										<textarea id="url" valuclass="inputTextarea" cols="50" rows="5" name="url"><xsl:value-of select="$url"/>
 										<xsl:text> </xsl:text>
 										</textarea>
 										<!--<small>Must be 250 characters or less.</small>-->
