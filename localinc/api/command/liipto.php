@@ -37,6 +37,16 @@ class api_command_liipto extends api_command {
 	       $this->data = 'false';
 	  }
 	}
+	
+    public function checkCodeReverse() {
+      $this->db =  api_db::factory("default");
+      $code = $this->getCodeFromDB($this->url);
+      if ($code) {
+           $this->data = json_encode($code);
+      } else {
+           $this->data = 'false';
+      }
+    }
 
 	public function create() {
 	    if (empty($this->url)) {

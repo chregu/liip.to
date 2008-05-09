@@ -34,22 +34,23 @@ padding: 2em;
 
 
 #codeOk {
-background-color: white; 
-font-size:1.5em;
-clear: none;
-float: right;
-width: 1em;
-margin-top: 6px;
+    background-color: #ffffff; 
+    font-size:1.5em;
+    clear: none;
+    float: right;
+    width: 1em;
+    margin-top: 6px;
+    
 }
 
 form div {
-clear: left;
-width: 35em;
+    clear: left;
+    width: 35em;
 
 }
 input, textarea {
     border: 1px solid black;
-margin-top: 0.5em;    
+    margin-top: 0.5em;    
 }
 
 
