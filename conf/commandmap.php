@@ -33,4 +33,4 @@ $m->route('/:url')
 $m->route('/')
    ->config(array(
     'command' => 'default',
-    'view' => array('xsl' => 'default.xsl')));
+    'view' => array('xsl' => 'start.xsl')));
