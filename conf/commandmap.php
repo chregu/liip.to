@@ -23,6 +23,13 @@ $m->route('/api/chk/*url')->config(array(
 
 ));
 
+$m->route('/api/rchk/*url')->config(array( 
+    'command'=>'liipto',
+    'method' => 'checkCodeReverse',
+    'view' => array('class' => 'txt')
+
+));
+
 $m->route('/:url')
   ->config(array(
     'command' => 'liipto',
