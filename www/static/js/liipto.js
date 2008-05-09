@@ -5,14 +5,23 @@ var D = YAHOO.util.Dom;
 
 YAHOO.namespace("liipto");
 
-
 YAHOO.liipto.checkCodeReverse = function() {
 
     var keypressTimer = null;
     var codeCheckRequest = null;
     var codeCheckResults = [];
     var codeCheckOld = '';
+	var apiURL = '/api/rchk/?url=';
     
+	/* duplicate code start (with YAHOO.liipto.checkCode)
+	 * 
+	 * If anyone knows a way to improve this, tell me
+	 * 
+	 * (due to the lack of protected memebers in JS, not easy
+	 *  possible without making all methods and vars public
+	 *  and then use YAHOO.lang.augmentObject)
+	 */
+	
 	var handleSuccess = function(o) {
         D.setStyle('codeOkSpinner','visibility', 'hidden');
 		var result = YAHOO.lang.JSON.parse(o.responseText);
@@ -62,6 +71,26 @@ YAHOO.liipto.checkCodeReverse = function() {
         }
             
     };
+	
+	var request = function() {
+        var value = YAHOO.lang.trim(D.get('url').value);
+        D.setStyle('codeOkSpinner','visibility', 'visible');
+        var sUrl = apiURL + encodeURIComponent(value);
+        var callback = {
+            success: handleSuccess,
+            failure: handleFailure,
+            argument: {'val':value}
+        };
+
+        if (codeCheckRequest && YAHOO.util.Connect.isCallInProgress(codeCheckRequest)) {
+            YAHOO.util.Connect.abort(codeCheckRequest); 
+            delete codeCheckRequest;
+        }
+
+        codeCheckRequest = YAHOO.util.Connect.asyncRequest('GET', sUrl, callback);
+    };
+
+	/* duplicate code end */
     
     var codeRed = function(value) {
         if (!(D.get('code').getAttribute('disabled') )) {
@@ -80,24 +109,7 @@ YAHOO.liipto.checkCodeReverse = function() {
 		D.setStyle("codeOk","background-color","green");
     };
     
-    var request = function() {
-        var value = YAHOO.lang.trim(D.get('url').value);
-        D.setStyle('codeOkSpinner','visibility', 'visible');
-        var sUrl = "/api/rchk/?url=" + encodeURIComponent(value);
-        var callback = {
-            success: handleSuccess,
-            failure: handleFailure,
-            argument: {'val':value}
-        };
-
-        if (codeCheckRequest && YAHOO.util.Connect.isCallInProgress(codeCheckRequest)) {
-            YAHOO.util.Connect.abort(codeCheckRequest); 
-            delete codeCheckRequest;
-        }
-
-        codeCheckRequest = YAHOO.util.Connect.asyncRequest('GET', sUrl, callback);
-    };
-
+  
     return {
       init: function() {
 	  	 codeKeypress();
@@ -112,7 +124,8 @@ YAHOO.liipto.checkCode = function() {
     var keypressTimer = null;
     var codeCheckRequest = null;
     var codeCheckResults = [];
-    
+    var urlAPI = "/api/chk/";
+	
     var handleSuccess = function(o) {
         D.setStyle('codeOkSpinner','visibility', 'hidden');
         var result = YAHOO.lang.JSON.parse(o.responseText);
@@ -174,11 +187,11 @@ YAHOO.liipto.checkCode = function() {
     var codeGreen = function() {
         D.setStyle("codeOk","background-color","green");
     };
-    
-    var request = function() {
+	
+	var request = function() {
         var value = YAHOO.lang.trim(D.get('code').value);
         D.setStyle('codeOkSpinner','visibility', 'visible');
-        var sUrl = "/api/chk/" + value;
+        var sUrl = urlAPI + value;
         var callback = {
             success: handleSuccess,
             failure: handleFailure,
@@ -187,10 +200,12 @@ YAHOO.liipto.checkCode = function() {
 
         if (codeCheckRequest && YAHOO.util.Connect.isCallInProgress(codeCheckRequest)) {
             YAHOO.util.Connect.abort(codeCheckRequest);
-			delete codeCheckRequest; 
+            delete codeCheckRequest; 
         }
         codeCheckRequest = YAHOO.util.Connect.asyncRequest('GET', sUrl, callback);
     };
+
+    
 
     return {
       init: function() {
