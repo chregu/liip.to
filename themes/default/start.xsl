@@ -25,7 +25,7 @@
 				<label for="code">code (optional):
 				</label>
 				<div  id="codeOk">
-					<img id="codeOkSpinner" style="visibility: hidden" src="{$webroot_yui}build/assets/skins/sam/wait.gif"/>
+					<img id="codeOkSpinner" style="visibility: hidden" src="{$webroot_yui}assets/skins/sam/wait.gif"/>
 				</div>                                      
 				<input id="code" name="code" class="inputText" type="text" value="" maxlength="20" size="10"/>
 				

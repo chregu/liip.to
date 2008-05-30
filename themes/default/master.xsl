@@ -33,8 +33,8 @@
 	</xsl:template>
 
 	<xsl:template name="html_head_css">
-		<link rel="stylesheet" type="text/css" href="{$webroot_yui}build/reset-fonts-grids/reset-fonts-grids.css" />
-		<link rel="stylesheet" type="text/css" href="{$webroot_yui}build/base/base.css" />
+		<link rel="stylesheet" type="text/css" href="{$webroot_yui}reset-fonts-grids/reset-fonts-grids.css" />
+		<link rel="stylesheet" type="text/css" href="{$webroot_yui}base/base.css" />
 		<link rel="stylesheet" type="text/css" href="{$webrootStatic}css/default.css" media="screen" />
 		<xsl:call-template name="page_head_css"/>
 	</xsl:template>
@@ -100,9 +100,9 @@
 	</xsl:template>
 	
 	<xsl:template name="page_bottom_javascript">
-		<script type="text/javascript" src="{$webroot_yui}build/yahoo-dom-event/yahoo-dom-event.js"></script>
-		<script type="text/javascript" src="{$webroot_yui}build/connection/connection-min.js"></script>
-		<script type="text/javascript" src="{$webroot_yui}build/json/json-min.js"></script>
+		<script type="text/javascript" src="{$webroot_yui}yahoo-dom-event/yahoo-dom-event.js"></script>
+		<script type="text/javascript" src="{$webroot_yui}connection/connection-min.js"></script>
+		<script type="text/javascript" src="{$webroot_yui}json/json-min.js"></script>
 		<script type="text/javascript" src="{$webrootStatic}js/liipto.js"></script>
 	</xsl:template>
 	
