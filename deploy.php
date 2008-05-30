@@ -17,12 +17,11 @@ if (!$version && $maxOldVersion > 0) {
 	
 }
 
-foreach (glob('./www/static/yui/*.*.*') as $dir) {
-print $dir ;
+foreach (glob('./www/static/yui/*_*_*') as $dir) {
+var_dump(preg_match('#([0-9]+\_[0-9]+\_[0-9]+)#',$dir ,$matches));
+$yuiversion = $matches[1];
 }
 
-
-die();
 
 if (! $version) {
 	die("no version supplied");
