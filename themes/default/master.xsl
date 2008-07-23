@@ -97,6 +97,8 @@
 	
 	<xsl:template name="page_body_footer">
 		Liip.to - Provided to you by <a href="http://www.liip.ch/">Liip AG</a>
+- <a href="http://svn.liip.ch/repos/public/misc/liipto/trunk/">Code</a> (Free as in beer and speech)
+- We do nothing bad with your entered data, promised.
 	</xsl:template>
 	
 	<xsl:template name="page_bottom_javascript">
