@@ -20,6 +20,9 @@ class api_command_liipto extends api_command {
 	}
 	
 	public function redirect() {
+	    if ( substr($this->url,-1) == "-") {
+	      $this->response->redirect(API_WEBROOT."api/resolve/".substr($this->url,0,-1));  
+	    }    
 	    $url = $this->getUrlFromCode($this->url);;
 	    if ($url) {
 	       $this->data = $url;
