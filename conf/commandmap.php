@@ -30,6 +30,13 @@ $m->route('/api/rchk/*url')->config(array(
 
 ));
 
+$m->route('/api/resolve/*url')->config(array( 
+    'command'=>'liipto',
+    'method' => 'resolve',
+    'view' => array('class' => 'txt')
+
+));
+
 $m->route('/:url')
   ->config(array(
     'command' => 'liipto',

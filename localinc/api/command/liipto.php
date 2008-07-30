@@ -29,6 +29,11 @@ class api_command_liipto extends api_command {
 	      
 	}
 	
+    public function resolve() {
+      $this->db =  api_db::factory("default");
+      $this->data = $this->getUrlFromCode($this->url);
+    }
+	
 	public function checkCode() {
 	  $this->db =  api_db::factory("default");
 	  if ($this->codeExists($this->url)) {
@@ -147,6 +152,8 @@ class api_command_liipto extends api_command {
         }
         return false;
 	}
+	
+	
 	
 	protected function getCodeFromDB($url) {
 	    $urlmd5 = md5($url);
