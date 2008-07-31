@@ -22,7 +22,7 @@
 			
 			
 			<div class="optional">
-				<label for="code">code (optional):
+				<label for="code">Custom alias (optional):
 				</label>
 				<div  id="codeOk">
 					<img id="codeOkSpinner" style="visibility: hidden" src="{$webroot_yui}assets/skins/sam/wait.gif"/>
