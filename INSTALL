@@ -16,7 +16,7 @@
 - import conf/liip_to.sql into that database
 - cd  conf/config.d/
 - mv 01-live-fixed.yml-dist 01-live-fixed.yml  
-- edit 01-live-fixed.yml and add your database parameters
+- edit 00-default.yml and add your database parameters
 - make a tmp/ dir on the same level as www/ and make that writeable
 
 that's it.
