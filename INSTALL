@@ -1,0 +1,22 @@
+- Download it from  http://liip.to/getLiipTo
+- tar -xzf liipto-snapshot.tgz
+- make a vhost entry for it, eg:
+
+<VirtualHost *:80>
+    ServerName to.test.chregu.tv
+    DocumentRoot /var/www/test/liipto/www
+    RewriteEngine On
+</VirtualHost>
+
+<Directory /var/www/test/liipto/www>
+     AllowOverride All
+</Directory>
+
+- create a database in mysql
+- import conf/liip_to.sql into that database
+- cd  conf/config.d/
+- mv 01-live-fixed.yml-dist 01-live-fixed.yml  
+- edit 01-live-fixed.yml and add your database parameters
+- make a tmp/ dir on the same level as www/ and make that writeable
+
+that's it.
