@@ -102,10 +102,10 @@
 	</xsl:template>
 	
 	<xsl:template name="page_bottom_javascript">
-		<script type="text/javascript" src="{$webroot_yui}yahoo-dom-event/yahoo-dom-event.js"></script>
-		<script type="text/javascript" src="{$webroot_yui}connection/connection-min.js"></script>
-		<script type="text/javascript" src="{$webroot_yui}json/json-min.js"></script>
-		<script type="text/javascript" src="{$webrootStatic}js/liipto.js"></script>
+		<script type="text/javascript" src="{$webroot_yui}yahoo-dom-event/yahoo-dom-event.js"><xsl:text> </xsl:text></script>
+		<script type="text/javascript" src="{$webroot_yui}connection/connection-min.js"><xsl:text> </xsl:text></script>
+		<script type="text/javascript" src="{$webroot_yui}json/json-min.js"><xsl:text> </xsl:text></script>
+		<script type="text/javascript" src="{$webrootStatic}js/liipto.js"><xsl:text> </xsl:text></script>
 	</xsl:template>
 	
 	
