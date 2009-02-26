@@ -17,6 +17,9 @@ class api_command_liipto extends api_command {
 		  $this->url = $attribs['url'];
 		}
 		$this->url = trim($this->url);
+		if (ini_get('magic_quotes_gpc')) {
+			$this->url = stripslashes($this->url);
+		}
 	}
 	
 	public function redirect() {
