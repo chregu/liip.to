@@ -13,13 +13,13 @@ class api_command_liipto extends api_command {
         $url = $this->request->getParam('url', null);
         if ($url) {
             $this->url = $url;
+            if (ini_get('magic_quotes_gpc')) {
+                $this->url = stripslashes($this->url);
+            }
         } else {
             $this->url = $attribs['url'];
         }
         $this->url = trim($this->url);
-        if (ini_get('magic_quotes_gpc')) {
-            $this->url = stripslashes($this->url);
-        }
     }
 
     public function redirect() {
@@ -80,6 +80,37 @@ class api_command_liipto extends api_command {
         ), $this->url);
         $this->create();
     }
+
+    public function revcan() {
+        if (empty($this->url)) {
+            die("empty url");
+        }
+        $this->data = $this->getRevCanonical($this->url);
+    }
+
+    protected function getRevCanonical($url) {
+
+        $ch = curl_init();
+
+        // set URL and other appropriate options
+
+
+        curl_setopt($ch, CURLOPT_URL, "http://revcanonical.appspot.com/api?url=" . urlencode($this->url));
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        // grab URL and pass it to the browser
+        $data = curl_exec($ch);
+
+        // close cURL resource, and free up system resources
+        curl_close($ch);
+        if ($data != $url) {
+            return $data;
+        }
+        return false;
+    }
+
+
 
     protected function getUrlFromCode($code) {
         if (!$this->db) {
