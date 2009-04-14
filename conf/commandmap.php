@@ -1,5 +1,6 @@
 <?php
 $m = new api_routing();
+$x = new api_routing_regex();
 
 $m->route('/api/txt/*url')->config(array( 
     'command'=>'liipto',
@@ -14,7 +15,6 @@ $m->route('/api/qr/*url')->config(array(
     'view' => array('class' => 'qr')
 
 ));
-
 
 $m->route('/api/chk/*url')->config(array( 
     'command'=>'liipto',
@@ -36,6 +36,12 @@ $m->route('/api/resolve/*url')->config(array(
     'view' => array('class' => 'txt')
 
 ));
+
+$x->route('/(?<url>.+:/.*)')
+    ->config(array(
+        'command' => 'liipto',
+        'method' => 'createFromPath',
+        'view' => array('class' => 'txt')));
 
 $m->route('/:url')
   ->config(array(

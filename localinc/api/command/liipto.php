@@ -69,7 +69,11 @@ class api_command_liipto extends api_command {
 	       $code = preg_replace("#[^a-zA-Z0-9_]#","",$code);
 	   }
        $this->data = 'http://'.$this->request->getHost() . '/'. $this->getShortCode($this->url,$code);
-       
+	}
+	
+	public function createFromPath() {
+	    $this->url = preg_replace(array('%(.+):/(?!/)%'), array('$1://'), $this->url);
+	    $this->create();
 	}
 	
 	protected function getUrlFromCode($code) {
