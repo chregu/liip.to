@@ -31,6 +31,14 @@ $m->route('/api/rchk/*url')->config(array(
 
 ));
 
+$m->route('/api/rchkrev/*url')->config(array(
+    'command'=>'liipto',
+    'method' => 'checkCodeReverseAndRevCan',
+    'view' => array('class' => 'txt')
+
+));
+
+
 $m->route('/api/resolve/*url')->config(array(
     'command'=>'liipto',
     'method' => 'resolve',
@@ -45,20 +53,17 @@ $m->route('/api/revcan/*url')->config(array(
 
 ));
 
-$x->route('/(?<url>.+:/.*)')
-    ->config(array(
-        'command' => 'liipto',
-        'method' => 'createFromPath',
-        'view' => array('class' => 'txt')));
-
-$m->route('/:url')
-  ->config(array(
+$x->route('/(?<url>.+:/.*)')->config(array(
     'command' => 'liipto',
-  'method' => 'redirect',
-  'view' => array('class' => 'redirect')));
+    'method' => 'createFromPath',
+    'view' => array('class' => 'txt')));
+
+$m->route('/:url')->config(array(
+    'command' => 'liipto',
+    'method' => 'redirect',
+    'view' => array('class' => 'redirect')));
 
 
-$m->route('/')
-   ->config(array(
+$m->route('/')->config(array(
     'command' => 'default',
     'view' => array('xsl' => 'start.xsl')));

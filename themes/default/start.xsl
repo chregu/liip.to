@@ -37,6 +37,11 @@
 				<label><xsl:text> </xsl:text></label>
 				<input type="submit" value="Send"/>
 			</div>
+			
+			<div id="revcan" style="visibility: hidden;">
+				<label>rev canonical: </label>
+				<a href="#" id="revcanurl"><xsl:text> </xsl:text></a>
+			</div>
 		</form>
 	</xsl:template>
 		

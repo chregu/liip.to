@@ -60,6 +60,12 @@ class api_command_liipto extends api_command {
         }
     }
 
+    public function checkCodeReverseAndRevCan() {
+        $this->checkCodeReverse();
+        $this->data = json_encode(array("alias" => json_decode( $this->data),"revcan" => $this->getRevCanonical($this->url)));
+
+    }
+
     public function create() {
         if (empty($this->url)) {
             die("empty url");
@@ -68,6 +74,9 @@ class api_command_liipto extends api_command {
         if ($code) {
             //normalize code
             $code = preg_replace("#[^a-zA-Z0-9_]#", "", $code);
+        } else if ($revcan = $this->getRevCanonical($this->url)) {
+               $this->data = $revcan;
+               return;
         }
         $this->data = 'http://' . $this->request->getHost() . '/' . $this->getShortCode($this->url, $code);
     }
@@ -93,8 +102,6 @@ class api_command_liipto extends api_command {
         $ch = curl_init();
 
         // set URL and other appropriate options
-
-
         curl_setopt($ch, CURLOPT_URL, "http://revcanonical.appspot.com/api?url=" . urlencode($this->url));
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -102,15 +109,18 @@ class api_command_liipto extends api_command {
         // grab URL and pass it to the browser
         $data = curl_exec($ch);
 
+        $respCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         // close cURL resource, and free up system resources
         curl_close($ch);
-        if ($data != $url) {
+
+        if ($respCode != 200) {
+            return false;
+        } else if ($data != $url) {
             return $data;
+        } else {
+            return false;
         }
-        return false;
     }
-
-
 
     protected function getUrlFromCode($code) {
         if (!$this->db) {

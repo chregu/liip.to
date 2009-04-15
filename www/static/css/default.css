@@ -63,3 +63,9 @@ form label {
 text-align:right;
 width:20em;
     }
+    
+#revcanurl {
+display: block; 
+margin:2px 0 5px;
+                    padding:5px 5px;
+                    }

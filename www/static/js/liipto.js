@@ -11,7 +11,7 @@ YAHOO.liipto.checkCodeReverse = function() {
     var codeCheckRequest = null;
     var codeCheckResults = [];
     var codeCheckOld = '';
-	var apiURL = '/api/rchk/?url=';
+	var apiURL = '/api/rchkrev/?url=';
     
 	/* duplicate code start (with YAHOO.liipto.checkCode)
 	 * 
@@ -25,13 +25,15 @@ YAHOO.liipto.checkCodeReverse = function() {
 	var handleSuccess = function(o) {
         D.setStyle('codeOkSpinner','visibility', 'hidden');
 		var result = YAHOO.lang.JSON.parse(o.responseText);
-        if (result) {
-            codeRed(result);
+        if (result.alias) {
+            codeRed(result.alias);
         } else {
             codeGreen();
         }
+        codeRevCan(result.revcan);
         codeCheckResults[o.argument.val] = result;
     };
+	
 	
 	
     var handleFailure = function(o) {
@@ -63,11 +65,12 @@ YAHOO.liipto.checkCodeReverse = function() {
            keypressTimer = YAHOO.lang.later(200,this,request);
         } else {
             D.setStyle('codeOkSpinner','visibility', 'hidden');
-            if (codeCheckResults[value]) {
-				codeRed(codeCheckResults[value]);
+            if (codeCheckResults[value] && codeCheckResults[value].alias) {
+				codeRed(codeCheckResults[value].alias);
             } else {
                 codeGreen();
             }
+            codeRevCan(codeCheckResults[value].revcan);
         }
             
     };
@@ -96,6 +99,9 @@ YAHOO.liipto.checkCodeReverse = function() {
         if (!(D.get('code').getAttribute('disabled') )) {
             codeCheckOld = D.get('code').value;
         }
+        if (!value) {
+            value = '';
+        }
         D.get('code').value = value;
         D.get('code').setAttribute('disabled','true');
         D.setStyle("codeOk","background-color","red");
@@ -109,7 +115,16 @@ YAHOO.liipto.checkCodeReverse = function() {
 		D.setStyle("codeOk","background-color","green");
     };
     
-  
+    var codeRevCan = function(value) {
+          if (value) {
+            D.get('revcanurl').firstChild.nodeValue = value;
+            D.get('revcanurl').setAttribute('href', value);
+            D.setStyle('revcan','visibility','visible');
+            
+        } else {
+            D.setStyle('revcan','visibility','hidden');
+        }
+    }
     return {
       init: function() {
 	  	 codeKeypress();
@@ -171,7 +186,7 @@ YAHOO.liipto.checkCode = function() {
            keypressTimer = YAHOO.lang.later(200,this,request);
         } else {
             D.setStyle('codeOkSpinner','visibility', 'hidden');
-            if (codeCheckResults[value]) {
+            if (codeCheckResults[value] && codeCheckResults[value].alias) {
                 codeRed();
             } else {
                 codeGreen();
