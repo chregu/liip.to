@@ -22,5 +22,5 @@ default: &default
             user: root
     webpaths: 
         static: static/
-        yui: static/yui/2_5_2/
+        yui: static/yui/2_7_0/
             

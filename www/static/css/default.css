@@ -51,6 +51,7 @@ form div {
 input, textarea {
     border: 1px solid black;
     margin-top: 0.5em;    
+    width: 12.25em;
 }
 
 

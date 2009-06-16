@@ -8,3 +8,4 @@ stage:
             pass: pass
     webpaths:
         static: static/
+        yui: static/yui/2_7_0/
