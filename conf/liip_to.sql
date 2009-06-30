@@ -39,7 +39,7 @@ CREATE TABLE `ids_mixed` (
 -- 
 
 CREATE TABLE `urls` (
-  `code` varchar(30) NOT NULL,
+  `code` varchar(30) character set latin1 collate latin1_bin NOT NULL,
   `url` varchar(2000) NOT NULL,
   `md5` char(32) NOT NULL,
   `changed` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
