@@ -7,8 +7,6 @@ class api_command_liipto extends api_command {
      * @var PDO the PDO object;
      */
     protected $db = null;
-    
-    protected $dbbinary = "";
 
     public function __construct($attribs) {
         parent::__construct($attribs);
@@ -129,7 +127,7 @@ class api_command_liipto extends api_command {
         if (!$this->db) {
             $this->db = api_db::factory("default");
         }
-        $query = "SELECT url from urls where code = ".$this->dbbinary." :code";
+        $query = "SELECT url from urls where code = :code";
         $stm = $this->db->prepare($query);
         $stm->execute(array(
                 ":code" => $code
@@ -213,7 +211,7 @@ class api_command_liipto extends api_command {
     }
 
     protected function codeExists($code) {
-        $query = "SELECT count(code) from urls where code = " . $this->dbbinary . " " . $this->db->quote($code);
+        $query = "SELECT count(code) from urls where code = " . $this->db->quote($code);
         $res = $this->db->query($query);
         if (!$res) {
             $info =  $this->db->errorInfo();
