@@ -7,6 +7,8 @@ class api_command_liipto extends api_command {
      * @var PDO the PDO object;
      */
     protected $db = null;
+    
+    protected $dbbinary = "";
 
     public function __construct($attribs) {
         parent::__construct($attribs);
@@ -67,6 +69,7 @@ class api_command_liipto extends api_command {
     }
 
     public function create() {
+
         if (empty($this->url)) {
             die("empty url");
         }
@@ -126,7 +129,7 @@ class api_command_liipto extends api_command {
         if (!$this->db) {
             $this->db = api_db::factory("default");
         }
-        $query = "SELECT url from urls where code = :code";
+        $query = "SELECT url from urls where code = ".$this->dbbinary." :code";
         $stm = $this->db->prepare($query);
         $stm->execute(array(
                 ":code" => $code
@@ -170,6 +173,11 @@ class api_command_liipto extends api_command {
         if (!$urlmd5) {
             $urlmd5 = md5($url);
         }
+
+        if ($code && $this->codeExists($code)) {
+            $code = $this->getNextCode($lconly);
+        }
+
         if (!$code) {
             $code = $this->getNextCode($lconly);
         }
@@ -196,9 +204,6 @@ class api_command_liipto extends api_command {
         } else {
             $tablename = 'mixed';
             $code = $this->id2url($this->nextId($tablename), $lconly);
-            while ($code == strtolower($code)) {
-                $code = $this->id2url($this->nextId($tablename), $lconly);
-            }
         }
         if ($this->codeExists($code)) {
             $code = $this->getNextCode($lconly);
@@ -208,8 +213,14 @@ class api_command_liipto extends api_command {
     }
 
     protected function codeExists($code) {
-        $query = "SELECT code from urls where code = " . $this->db->quote($code);
-        if ($this->db->query($query)->rowCount() > 0) {
+        $query = "SELECT count(code) from urls where code = " . $this->dbbinary . " " . $this->db->quote($code);
+        $res = $this->db->query($query);
+        if (!$res) {
+            $info =  $this->db->errorInfo();
+            throw new api_exception_Db(api_exception::THROW_FATAL,array(),0,$info[2]);
+        }
+        $r = $res->fetch();
+        if ($r && $r[0] > 0) {
             return true;
         }
         return false;
@@ -246,9 +257,19 @@ class api_command_liipto extends api_command {
         $sequence_name = 'ids_' . $name;
         $seqcol_name = 'id';
         $query = "INSERT INTO $sequence_name ($seqcol_name) VALUES (NULL)";
-        $this->db->query($query);
+        $res = $this->db->exec($query);
+        if (!$res) {
+            $info =  $this->db->errorInfo();
+            throw new api_exception_Db(api_exception::THROW_FATAL,array(),0,$info[2]);
+        }
 
-        $value = $this->db->lastInsertId();
+        $value = $this->db->lastInsertId($seqcol_name);
+
+        if (!$value) {
+           throw new api_exception(api_exception::THROW_FATAL,array(),0,"Couldn't get a value for nextId");
+        }
+
+
 
         if (is_numeric($value)) {
             $query = "DELETE FROM $sequence_name WHERE $seqcol_name < $value";
