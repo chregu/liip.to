@@ -19,4 +19,5 @@
 - edit 00-default.yml and add your database parameters
 - make a tmp/ dir on the same level as www/ and make that writeable
 
+
 that's it.
