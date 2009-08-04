@@ -2,7 +2,6 @@
 $m = new api_routing();
 $x = new api_routing_regex();
 
-// Basic URL
 $m->route('/api/txt/*url')->config(array(
     'command'=>'liipto',
     'method' => 'create',
