@@ -17,3 +17,9 @@ www/static/yui/2_7_0:
   type: svn
   revision: 11356
   remote: braid/www/static/yui/2-7-0
+www/inc/minify: 
+  squashed: true
+  url: https://svn.liip.ch/repos/public/ext/minify/trunk
+  type: svn
+  revision: 10343
+  remote: braid/www/inc/minify
