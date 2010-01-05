@@ -82,6 +82,52 @@ class api_command_liipto extends api_command {
         $this->data = 'http://' . $this->request->getHost() . '/' . $this->getShortCode($this->url, $code);
     }
 
+    public function create140() {
+        if (empty($this->url)) {
+            die("empty url");
+        }
+
+        $url = $this->url;
+        $text = $this->request->getParam('text', '');
+        $maxChars = $this->request->getParam('maxchars', '125');
+
+        if (strlen($text) > 140) {
+            $text = substr($text, 0, $maxChars);
+        }
+
+        if (strlen($text . $url) <= $maxChars) {
+            return $this->returnCreate140($url, $text, "fits in maxChars");
+        }
+
+        if ($revcan = $this->getRevCanonical($url)) {
+            $url = $revcan;
+        } else {
+            $url = 'http://' . $this->request->getHost() . '/' . $this->getShortCode($url);
+        }
+        return $this->trimTo140($url, $text, $maxChars);
+    }
+
+    protected function trimTo140($url, $text, $maxChars, $reason = '') {
+
+        if (strlen($text . $url) <= 140) {
+            return $this->returnCreate140($url, $text, $reason);
+        } else {
+            // if we shorten the text, we shorten it to $maxChars to allow RTs
+            $text = substr($text, 0, $maxChars - strlen($url) - 1);
+            return $this->returnCreate140($url, $text, "$reason shortened text");
+        }
+    }
+
+    protected function returnCreate140($url, $text, $reason = '') {
+        $this->data = json_encode(array(
+                "url" => $url,
+                "text" => $text,
+                'reason' => $reason
+        ));
+
+        return true;
+    }
+
     public function createFromPath() {
         $this->url = preg_replace(array(
                 '%(.+):/(?!/)%'

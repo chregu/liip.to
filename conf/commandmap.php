@@ -9,6 +9,12 @@ $m->route('/api/txt/*url')->config(array(
 
 ));
 
+$m->route('/api/txt140/*url')->config(array(
+    'command'=>'liipto',
+    'method' => 'create140',
+    'view' => array('class' => 'txt')
+
+));
 $m->route('/api/qr/*url')->config(array(
     'command'=>'liipto',
     'method' => 'create',
