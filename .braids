@@ -5,3 +5,9 @@ inc/api:
   type: svn
   revision: 12867
   remote: braid/inc/api
+ext/db-pdo: 
+  squashed: true
+  url: https://svn.liip.ch/repos/public/okapi/ext/db-pdo/trunk/inc
+  type: svn
+  revision: 12344
+  remote: braid/ext/db-pdo
