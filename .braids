@@ -11,3 +11,9 @@ ext/db-pdo:
   type: svn
   revision: 12344
   remote: braid/ext/db-pdo
+www/static/yui/2_7_0: 
+  squashed: true
+  url: https://svn.liip.ch/repos/public/externals/yui/yui-2.7.0/build
+  type: svn
+  revision: 11356
+  remote: braid/www/static/yui/2-7-0
