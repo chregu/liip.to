@@ -1,4 +1,10 @@
 --- 
+ext/firephp: 
+  squashed: true
+  url: https://svn.liip.ch/repos/public/okapi/ext/firephp/trunk/inc
+  type: svn
+  revision: 10916
+  remote: braid/ext/firephp
 inc/api: 
   squashed: true
   url: https://svn.liip.ch/repos/public/okapi/core/trunk/inc/api
