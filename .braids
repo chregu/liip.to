@@ -17,6 +17,12 @@ ext/db-pdo:
   type: svn
   revision: 12344
   remote: braid/ext/db-pdo
+localinc/Zend/Log: 
+  squashed: true
+  url: https://svn.liip.ch/repos/public/externals/Zend/framework/standard/tags/release-1.7.5/library/Zend/Log
+  type: svn
+  revision: 11205
+  remote: braid/localinc/Zend/Log
 www/static/yui/2_7_0: 
   squashed: true
   url: https://svn.liip.ch/repos/public/externals/yui/yui-2.7.0/build
