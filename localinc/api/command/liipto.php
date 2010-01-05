@@ -94,35 +94,34 @@ class api_command_liipto extends api_command {
         if (strlen($text) > 140) {
             $text = substr($text, 0, $maxChars);
         }
-
-        if (strlen($text . $url) <= $maxChars) {
-            return $this->returnCreate140($url, $text, "fits in maxChars");
-        }
-
+        //if there's a shorturl defined by the site, always use this
         if ($revcan = $this->getRevCanonical($url)) {
-            $url = $revcan;
-        } else {
-            $url = 'http://' . $this->request->getHost() . '/' . $this->getShortCode($url);
+                 return $this->trimTo140($revcan, $text, $maxChars);
         }
+        //if the long url fits into 140chars, use this
+        if (strlen($text . $url) <= $maxChars) {
+            return $this->returnCreate140($url, $text, $maxChars);
+        }
+        //otherwise generate a shorturl and use it.
+        $url = 'http://' . $this->request->getHost() . '/' . $this->getShortCode($url);
         return $this->trimTo140($url, $text, $maxChars);
     }
 
-    protected function trimTo140($url, $text, $maxChars, $reason = '') {
+    protected function trimTo140($url, $text, $maxChars) {
 
         if (strlen($text . $url) <= 140) {
-            return $this->returnCreate140($url, $text, $reason);
+            return $this->returnCreate140($url, $text);
         } else {
             // if we shorten the text, we shorten it to $maxChars to allow RTs
             $text = substr($text, 0, $maxChars - strlen($url) - 1);
-            return $this->returnCreate140($url, $text, "$reason shortened text");
+            return $this->returnCreate140($url, $text);
         }
     }
 
-    protected function returnCreate140($url, $text, $reason = '') {
+    protected function returnCreate140($url, $text) {
         $this->data = json_encode(array(
                 "url" => $url,
-                "text" => $text,
-                'reason' => $reason
+                "text" => $text
         ));
 
         return true;
