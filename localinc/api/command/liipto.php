@@ -89,6 +89,11 @@ class api_command_liipto extends api_command {
 
         $url = $this->url;
         $text = $this->request->getParam('text', '');
+
+        if (ini_get('magic_quotes_gpc')) {
+            $text = stripslashes($text);
+        }
+        
         $maxChars = $this->request->getParam('maxchars', '125');
 
         if (strlen($text) > 140) {
