@@ -8,8 +8,12 @@ class api_command_liipto extends api_command {
      */
     protected $db = null;
 
+    protected $attribs = null;
+
     public function __construct($attribs) {
         parent::__construct($attribs);
+        $this->attribs = $attribs;
+
         $url = $this->request->getParam('url', null);
         if ($url) {
             $this->url = $url;
@@ -26,14 +30,27 @@ class api_command_liipto extends api_command {
         if (substr($this->url, -1) == "-") {
             $this->response->redirect(API_WEBROOT . "api/resolve/" . substr($this->url, 0, -1));
         }
-        $url = $this->getUrlFromCode($this->url);
-        ;
-        if ($url) {
-            $this->data = $url;
+        $code = $this->getUrlFromCode($this->url);
+    
+        if ($code) {
+            $this->data = $code;
         } else {
             die("error");
         }
+        /**
+         new version from bootcamp
+        $counter_sql = 1;
+    
+        $query = 'UPDATE urls SET counter = counter + 1 WHERE url = :url';
+    
+        $stm = $this->db->prepare($query);
 
+        if (!$stm->execute(array(
+            ':url' => $code,
+        ))) {
+            throw new api_exception('DB Error');
+        }
+        */
     }
 
     public function resolve() {
@@ -63,11 +80,9 @@ class api_command_liipto extends api_command {
     public function checkCodeReverseAndRevCan() {
         $this->checkCodeReverse();
         $this->data = json_encode(array("alias" => json_decode( $this->data),"revcan" => $this->getRevCanonical($this->url)));
-
     }
 
     public function create() {
-
         if (empty($this->url)) {
             die("empty url");
         }
@@ -80,6 +95,14 @@ class api_command_liipto extends api_command {
                return;
         }
         $this->data = 'http://' . $this->request->getHost() . '/' . $this->getShortCode($this->url, $code);
+        return $this->data;
+    }
+    
+    public function result() {
+        $url = $this->create();
+    
+        $this->data = array();
+        $this->data[] = array("url" => $url);
     }
 
     public function create140() {
@@ -138,6 +161,7 @@ class api_command_liipto extends api_command {
         ), array(
                 '$1://'
         ), $this->url);
+        
         $this->create();
     }
 
@@ -145,11 +169,11 @@ class api_command_liipto extends api_command {
         if (empty($this->url)) {
             die("empty url");
         }
+        
         $this->data = $this->getRevCanonical($this->url);
     }
 
     protected function getRevCanonical($url) {
-
         $ch = curl_init();
 
         // set URL and other appropriate options
@@ -207,17 +231,17 @@ class api_command_liipto extends api_command {
         $code = $this->getCodeFromDBWithMD5($urlmd5);
         //if not create one
         if (!$code) {
+        $private = (bool)$this->request->getParam('checkbox', false);
             // insert url
-            $this->insertUrl($url, $usercode, $lconly, $urlmd5);
+            $this->insertUrl($url, $usercode, $lconly, $urlmd5, $private);
             // get code again (if another code with the same url was inserted in the meantime...)
             $code = $this->getCodeFromDBWithMD5($urlmd5);
 
         }
         return $code;
-
     }
 
-    protected function insertUrl($url, $code = null, $lconly = false, $urlmd5 = null) {
+    protected function insertUrl($url, $code = null, $lconly = false, $urlmd5 = null, $private = false) {
         if (!$urlmd5) {
             $urlmd5 = md5($url);
         }
@@ -230,6 +254,12 @@ class api_command_liipto extends api_command {
             $code = $this->getNextCode($lconly);
         }
 
+        $private_sql = $private ? 1 : 0;
+        /*
+        new version from bootcamp branch
+        $query = 'INSERT INTO urls (code,url,md5,private) VALUES (:code,:url,:urlmd5,:private)';
+        */ 
+        
         $query = 'INSERT INTO urls (code,url,md5) VALUES (:code,:url,:urlmd5)';
 
         $stm = $this->db->prepare($query);
@@ -237,9 +267,10 @@ class api_command_liipto extends api_command {
         if (!$stm->execute(array(
                 ':code' => $code,
                 ':url' => $url,
-                ':urlmd5' => $urlmd5
+                ':urlmd5' => $urlmd5,
+                //':private' => $private_sql
         ))) {
-            die("DB Error");
+            throw new api_exception('DB Error');
         }
         return $code;
     }
@@ -297,11 +328,9 @@ class api_command_liipto extends api_command {
             $url = 'http://' . $url;
         }
         return $url;
-
     }
 
     protected function nextId($name = 'mixed') {
-
         $sequence_name = 'ids_' . $name;
         $seqcol_name = 'id';
         $query = "INSERT INTO $sequence_name ($seqcol_name) VALUES (NULL)";
@@ -316,8 +345,6 @@ class api_command_liipto extends api_command {
         if (!$value) {
            throw new api_exception(api_exception::THROW_FATAL,array(),0,"Couldn't get a value for nextId");
         }
-
-
 
         if (is_numeric($value)) {
             $query = "DELETE FROM $sequence_name WHERE $seqcol_name < $value";
@@ -350,6 +377,33 @@ class api_command_liipto extends api_command {
             $oldpow = $pow;
         }
         return $result;
+    }
+
+    public function search(){
+        if (empty($this->url)) {
+        die("empty input");
+        }
+    
+        $input = $this->request->getParam('url', null);
+        
+        $url = $this->getUrlFromSearch($input);
+        
+        $this->data["input"] = $this->request->getParam('url', "error");
+        $this->data["search"] = $url;
+    }
+    
+    public function getUrlFromSearch($parturl) {
+    if (!$this->db) {
+        $this->db = api_db::factory("default");
+    }
+    $query = "SELECT * FROM urls WHERE url LIKE :parturl OR code LIKE :parturl";
+    $stm = $this->db->prepare($query);
+    $stm->execute(array(
+        'parturl' => "%".$parturl."%"
+    ));
+    
+    $results = $stm->fetchAll(PDO::FETCH_ASSOC);
+    return $results;
     }
 
     public function getData() {
