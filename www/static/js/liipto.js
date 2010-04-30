@@ -11,7 +11,7 @@ YAHOO.liipto.checkCodeReverse = function() {
     var codeCheckRequest = null;
     var codeCheckResults = [];
     var codeCheckOld = '';
-	var apiURL = '/api/rchkrev/?url=';
+    var apiURL = 'api/rchkrev/?url=';
     
 	/* duplicate code start (with YAHOO.liipto.checkCode)
 	 * 
@@ -23,7 +23,7 @@ YAHOO.liipto.checkCodeReverse = function() {
 	 */
 	
 	var handleSuccess = function(o) {
-        D.setStyle('codeOkSpinner','visibility', 'hidden');
+        D.setStyle('codeOkSpinner', 'visibility', 'hidden');
 		var result = YAHOO.lang.JSON.parse(o.responseText);
         if (result.alias) {
             codeRed(result.alias);
@@ -37,7 +37,7 @@ YAHOO.liipto.checkCodeReverse = function() {
 	
 	
     var handleFailure = function(o) {
-        console.log("FAILUre " + alert(o.statusText)); 
+        console.log("FAILURE " + alert(o.statusText));
     };
     
     var codeKeypressAsync = function() {
@@ -186,7 +186,10 @@ YAHOO.liipto.checkCode = function() {
            keypressTimer = YAHOO.lang.later(200,this,request);
         } else {
             D.setStyle('codeOkSpinner','visibility', 'hidden');
-            if (codeCheckResults[value] && codeCheckResults[value].alias) {
+            if (codeCheckResults[value]
+                && (codeCheckResults[value].alias
+                    || codeCheckResults[value].alias == undefined)
+            ) {
                 codeRed();
             } else {
                 codeGreen();
