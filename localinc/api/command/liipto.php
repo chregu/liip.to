@@ -7,7 +7,6 @@ class api_command_liipto extends api_command {
      * @var PDO the PDO object;
      */
     protected $db = null;
-
     protected $attribs = null;
 
     public function __construct($attribs) {
@@ -86,6 +85,17 @@ class api_command_liipto extends api_command {
         if (empty($this->url)) {
             die("empty url");
         }
+        if (strpos($this->url,"sitemarks.in")) {
+            $this->data = $this->url;
+	    return;
+        }
+
+        if ($rej = $this->checkBlacklists($this->url)) {
+		error_log("SPAM from " . $_SERVER['REMOTE_ADDR'] . " " . $rej . ":  ". $this->url);
+                $this->data = $this->url;
+		return;
+	}
+
         $code = $this->request->getParam('code', null);
         if ($code) {
             //normalize code
@@ -94,7 +104,7 @@ class api_command_liipto extends api_command {
                $this->data = $revcan;
                return;
         }
-        $this->data = 'http://' . $this->request->getHost() . '/' . $this->getShortCode($this->url, $code);
+        $this->data = $this->getFullShortUrl($this->url,$code);
         return $this->data;
     }
     
@@ -104,6 +114,17 @@ class api_command_liipto extends api_command {
         $this->data = array();
         $this->data[] = array("url" => $url);
     }
+
+   protected function getFullShortUrl($url, $code = null) {
+	$code =  $this->getShortCode($url, $code);
+        if (!$code) {
+     	    return  $this->getGoogleCode($url);
+        } else {
+            return 'http://' . $this->request->getHost() . '/' . $code;
+        }
+
+
+   }
 
     public function create140() {
         if (empty($this->url)) {
@@ -130,8 +151,13 @@ class api_command_liipto extends api_command {
         if (strlen($text . $url) <= $maxChars) {
             return $this->returnCreate140($url, $text, $maxChars);
         }
+        if ($rej = $this->checkBlacklists($url)) {
+		error_log("SPAM from " . $_SERVER['REMOTE_ADDR'] . " " . $rej . ":  ". $this->url);
+	} else {
         //otherwise generate a shorturl and use it.
-        $url = 'http://' . $this->request->getHost() . '/' . $this->getShortCode($url);
+	        $url = $this->getFullShortUrl($url);
+        }
+
         return $this->trimTo140($url, $text, $maxChars);
     }
 
@@ -174,6 +200,7 @@ class api_command_liipto extends api_command {
     }
 
     protected function getRevCanonical($url) {
+
         $ch = curl_init();
 
         // set URL and other appropriate options
@@ -210,6 +237,9 @@ class api_command_liipto extends api_command {
     }
 
     protected function getShortCode($url, $usercode = null, $lconly = false) {
+        if (strpos($url,"migipedia")) {
+            $lconly = true;
+        }
         // if no ., it's not a real URL :)
         if (strpos($url, '.') === false) {
             return $url;
@@ -253,14 +283,16 @@ class api_command_liipto extends api_command {
         if (!$code) {
             $code = $this->getNextCode($lconly);
         }
+//ANTI SPAM SCHUTZ, remove, wenn wir was besseres haben
+//return null;
 
+        $query = 'INSERT INTO urls (code,url,md5,IP) VALUES (:code,:url,:urlmd5,:IP)';
         $private_sql = $private ? 1 : 0;
         /*
         new version from bootcamp branch
         $query = 'INSERT INTO urls (code,url,md5,private) VALUES (:code,:url,:urlmd5,:private)';
         */ 
         
-        $query = 'INSERT INTO urls (code,url,md5) VALUES (:code,:url,:urlmd5)';
 
         $stm = $this->db->prepare($query);
 
@@ -268,6 +300,7 @@ class api_command_liipto extends api_command {
                 ':code' => $code,
                 ':url' => $url,
                 ':urlmd5' => $urlmd5,
+                ':IP' => $_SERVER['REMOTE_ADDR']
                 //':private' => $private_sql
         ))) {
             throw new api_exception('DB Error');
@@ -357,13 +390,15 @@ class api_command_liipto extends api_command {
         if (0 == $val) {
             return 0;
         }
+        /*
         if ($lconly) {
             $base = 36;
             $symbols = 'adgjmptuwvk0376e9f8b4y2osi5nz1crhxlq';
         } else {
+            */
             $base = 63;
             $symbols = 'JVPAGYRKBWLUTHXCDSZNFOQMEIef02nwy1mdtx7p89653cbaoj4igkvrsqz_hul';
-        }
+        //}
         $result = '';
         $exp = $oldpow = 1;
         while ($val > 0 && $exp < 10) {
@@ -409,5 +444,52 @@ class api_command_liipto extends api_command {
     public function getData() {
         return $this->data;
     }
+
+   protected function getGoogleCode($url) {
+    
+        $ch = curl_init();      
+
+        // set URL and other appropriate options
+        curl_setopt($ch, CURLOPT_URL, "https://www.googleapis.com/urlshortener/v1/url");
+    
+        curl_setopt($ch, CURLOPT_POST, 0);     
+	 curl_setopt($ch, CURLOPT_POSTFIELDS,json_encode(array("longUrl" => $url)));
+
+        curl_setopt($ch, CURLOPT_HEADER, 0);     
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+        // grab URL and pass it to the browser
+        $data = curl_exec($ch);
+
+        $respCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        // close cURL resource, and free up system resources
+        curl_close($ch);    
+        $data  = json_decode($data,true);
+        return $data['id'];
+
+   }
+
+protected function checkBlacklists($url) {
+        $surbl = new Net_DNSBL_SURBL();
+        if ($surbl->isListed("http://liip.ch/")) {
+        } else {
+                if ($surbl->isListed($url)) {
+			return "surbl.org blacklisted";
+                }
+        }
+
+   	$blacklist = "xbl.spamhaus.org";
+
+	$ip = $_SERVER['REMOTE_ADDR'];
+        $d = new Net_DNSBL();
+        $d->setBlacklists(array($blacklist));
+
+        if ($d->isListed($ip)) {
+            return "xbl.spamhaus.org blacklisted sender IP ($ip <http://www.spamhaus.org/query/bl?ip=$ip>). ";
+        }
+	return false;
+            
+
+}
 
 }
