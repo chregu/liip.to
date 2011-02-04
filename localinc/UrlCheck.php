@@ -12,8 +12,9 @@ class UrlCheck {
 
     public function isListed($url, $ip = null, $all = false) {
 
-
+        $this->reason = array();
         if ($url) {
+            $url = str_replace(" ","%20",$url);
             $this->checkUrl($url, $all);
 
             if (!$all && count($this->reason) > 0) {
@@ -24,7 +25,7 @@ class UrlCheck {
 
             $resp = $this->findFinalURL($url);
             if ($resp['http_code'] >= 300) {
-                    $this->reason[] = "HTTP code for " . $resp['url'] . " was " . $resp['http_code'];
+                    $this->reason['httperror'] =  $resp['http_code'] . " HTTP code for " . $resp['url'] ;
             }
             $finalURL = $resp['url'];
 
@@ -45,7 +46,7 @@ class UrlCheck {
         if (count($this->reason) > 0) {
             return true;
         }
-
+	return false;
     }
 
     protected function checkUrl($url, $all) {
@@ -108,6 +109,9 @@ class UrlCheck {
         if ($url.".".$server == ($ip = gethostbyname($url.".".$server))) {
             return false;
         } else {
+            if ($ip == "127.0.1.255") {
+		return false;
+	    }
             $this->reason[] = "$url is on $server with $ip";
             return $ip;
         }
@@ -201,15 +205,18 @@ class UrlCheck {
         $ch = curl_init();
         curl_setopt ($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, false );
+	$f = fopen("/dev/null","w");
+	curl_setopt( $ch, CURLOPT_FILE, $f);
         curl_setopt( $ch, CURLOPT_TIMEOUT, 10 );
-        curl_setopt( $ch, CURLOPT_MAXREDIRS, 10 );
+        curl_setopt( $ch, CURLOPT_MAXREDIRS, 20 );
 
 
-        $content = curl_exec( $ch );
+        curl_exec( $ch );
         $response = curl_getinfo( $ch );
         $url = $response['url'];
         curl_close ( $ch );
+	fclose($f);
         return array("url" =>$url, "http_code" => $response['http_code']);
 
     }

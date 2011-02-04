@@ -34,7 +34,9 @@ class api_command_liipto extends api_command {
         if ($code) {
             $this->data = $code;
         } else {
-            die("error");
+ 		header("HTTP/1.0 404",true,404);
+
+            die("not found!");
         }
         /**
          new version from bootcamp
@@ -228,12 +230,18 @@ class api_command_liipto extends api_command {
         if (!$this->db) {
             $this->db = api_db::factory("default");
         }
-        $query = "SELECT url from urls where code = :code";
+        $query = "SELECT url, spamreason from urls where code = :code";
         $stm = $this->db->prepare($query);
         $stm->execute(array(
                 ":code" => $code
         ));
-        return $stm->fetchColumn();
+        $row = $stm->fetch();
+
+	if ($row['spamreason']) {
+ 		header("HTTP/1.0 403",true,403);
+		die("This url was considered SPAM! If you think, this is wrong, contact us.");
+	}
+        return $row['url'];;
     }
 
     protected function getShortCode($url, $usercode = null, $lconly = false) {
@@ -286,7 +294,7 @@ class api_command_liipto extends api_command {
 //ANTI SPAM SCHUTZ, remove, wenn wir was besseres haben
 //return null;
 
-        $query = 'INSERT INTO urls (code,url,md5,IP) VALUES (:code,:url,:urlmd5,:IP)';
+        $query = 'INSERT INTO urls (code,url,md5,IP,added) VALUES (:code,:url,:urlmd5,:IP,now())';
         $private_sql = $private ? 1 : 0;
         /*
         new version from bootcamp branch
@@ -352,6 +360,7 @@ class api_command_liipto extends api_command {
                 ':urlmd5' => $urlmd5
         ));
         return $stm->fetchColumn();
+
     }
 
     protected function normalizeUrl($url) {
@@ -418,7 +427,7 @@ class api_command_liipto extends api_command {
 
     public function search(){
         if (empty($this->url)) {
-        die("empty input");
+        	die("empty input");
         }
     
         $input = $this->request->getParam('url', null);
