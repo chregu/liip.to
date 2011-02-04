@@ -295,16 +295,18 @@ class api_command_liipto extends api_command {
         
 
         $stm = $this->db->prepare($query);
-
-        if (!$stm->execute(array(
+        $data = array(
                 ':code' => $code,
                 ':url' => $url,
                 ':urlmd5' => $urlmd5,
                 ':IP' => $_SERVER['REMOTE_ADDR']
                 //':private' => $private_sql
-        ))) {
+        );
+        if (!$stm->execute($data)) {
             throw new api_exception('DB Error');
         }
+
+        error_log("INSERT " . var_export($data,true));
         return $code;
     }
 
@@ -470,23 +472,15 @@ class api_command_liipto extends api_command {
    }
 
 protected function checkBlacklists($url) {
-        $surbl = new Net_DNSBL_SURBL();
-        if ($surbl->isListed("http://liip.ch/")) {
+        include_once("UrlCheck.php");
+        $surbl = new UrlCheck();
+        if ($surbl->isListed("http://liip.ch/", $_SERVER['REMOTE_ADDR'])) {
         } else {
-                if ($surbl->isListed($url)) {
-			return "surbl.org blacklisted";
+                if ($surbl->isListed($url, $_SERVER['REMOTE_ADDR'], true)) {
+			return var_export($surbl->reason,true);
                 }
         }
 
-   	$blacklist = "xbl.spamhaus.org";
-
-	$ip = $_SERVER['REMOTE_ADDR'];
-        $d = new Net_DNSBL();
-        $d->setBlacklists(array($blacklist));
-
-        if ($d->isListed($ip)) {
-            return "xbl.spamhaus.org blacklisted sender IP ($ip <http://www.spamhaus.org/query/bl?ip=$ip>). ";
-        }
 	return false;
             
 
