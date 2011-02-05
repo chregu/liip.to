@@ -54,7 +54,9 @@ class UrlCheck {
     }
 
     protected function checkUrl($url, $all) {
+
         if ($this->isOnDBL_Spamhaus($url) && !$all) {
+
             return true;
         }
         if ($this->isOnSurbl($url) && !$all) {
@@ -65,7 +67,10 @@ class UrlCheck {
         $host       = $parsed_uri['host'];
         if ($host) {
             $urlip = gethostbyname($host);
-            if ($urlip) {
+	    if ($urlip == $host) {
+	       $this->reason[] = "$host does not resolve to an IP";
+		return false;
+	    } else if ($urlip) {
                 $this->checkIp($urlip,$all);
                 if (!$all && count($this->reason) > 0) {
                     return true;
