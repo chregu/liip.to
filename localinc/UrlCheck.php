@@ -4,6 +4,7 @@ class UrlCheck {
 
     public  $reason = array();
     static public $doubleCcTld = null;
+    static public $whitelist = null;
 
     function __construct()  {
 
@@ -14,6 +15,9 @@ class UrlCheck {
 
         $this->reason = array();
         if ($url) {
+	        if ($this->isOnWhitelist($url)) {
+			return true;
+		}
             $url = str_replace(" ","%20",$url);
             $this->checkUrl($url, $all);
 
@@ -194,9 +198,30 @@ class UrlCheck {
 
         if (!self::$doubleCcTld) {
             // from  http://george.surbl.org/two-level-tlds
-            $data = file_get_contents(dirname(__FILE__.'/two-level-tlds'));
-            $data = explode("\n", $data);
+            $data = file_get_contents(dirname(__FILE__).'/two-level-tlds.dat');
+            $data = explode("\n", trim($data));
             self::$doubleCcTld = array_flip($data);
+        }
+    }
+
+    function isOnWhitelist($url) {
+
+         self::initWhitelist();
+ 	$host       = '';
+        $parsed_uri = parse_url($url);
+        $host       = $parsed_uri['host'];
+          if (array_key_exists($host, self::$whitelist)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    function initWhitelist() {
+
+        if (!self::$whitelist) {
+            $data = file_get_contents(dirname(__FILE__).'/whitelist.dat');
+            $data = explode("\n", trim($data));
+            self::$whitelist = array_flip($data);
         }
     }
 
@@ -206,6 +231,7 @@ class UrlCheck {
         curl_setopt ($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt( $ch, CURLOPT_RETURNTRANSFER, false );
+        curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
 	$f = fopen("/dev/null","w");
 	curl_setopt( $ch, CURLOPT_FILE, $f);
         curl_setopt( $ch, CURLOPT_TIMEOUT, 10 );
@@ -220,5 +246,6 @@ class UrlCheck {
         return array("url" =>$url, "http_code" => $response['http_code']);
 
     }
+
 
 }
