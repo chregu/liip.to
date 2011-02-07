@@ -79,6 +79,7 @@ file_put_contents($liveVersionPath . "/conf/config.d/02-live.yml", "live:
 mkdir($liveVersionPath . '/www', 0755);
 copy($oriPath . "/www/index.php", $liveVersionPath . "/www/index.php");
 copy($oriPath . "/www/.htaccess", $liveVersionPath . "/www/.htaccess");
+copy($oriPath . "/www/favicon.ico", $liveVersionPath . "/www/favicon.ico");
 
 file_put_contents($liveVersionPath . "/www/.htaccess", file_get_contents($oriPath . '/www/.htaccess-live'), FILE_APPEND);
 
@@ -97,21 +98,33 @@ chdir($rootPath);
 chdir($liveVersionPath . '/www/static/');
 
 foreach (glob('../../../live.*') as $dir) {
-	$nr = substr(basename($dir), 5, 1);
+	$nr = substr(basename($dir), 5);
+
 	if (substr($dir, 0, 6) == "live.$version") {
 		continue;
 	}
 	
-	$target = '../../../live.' . $nr . '/www/static/' . $nr . '/';
 	
-	if ($nr != $version && ! (is_link($target))) {
-		@unlink($nr);
-		symlink($target, $nr);
-	
+        if ($nr < $version - 10) {
+		$delete =  $rootPath . '/live.' . ($nr);
+
+		print "rm -rf   $delete\n";
+		`rm -rf $delete`;
+
+
+	} else {
+		$target = '../../../live.' . $nr . '/www/static/' . $nr . '/';
+        	
+		if ($nr != $version && ! (is_link($target))) {
+			@unlink($nr);
+			symlink($target, $nr);
+		
+		}
 	}
 	//full_copy($dir,$liveVersionPath . '/inc/'.basename($dir));
 }
 chdir($rootPath);
+
 
 @unlink('live');
 symlink(basename($liveVersionPath), 'live');
