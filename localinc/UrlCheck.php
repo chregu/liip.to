@@ -16,7 +16,7 @@ class UrlCheck {
         $this->reason = array();
         if ($url) {
 	        if ($this->isOnWhitelist($url)) {
-			return true;
+			return false;
 		}
             $url = str_replace(" ","%20",$url);
             $this->checkUrl($url, $all);
@@ -68,7 +68,7 @@ class UrlCheck {
         if ($host) {
             $urlip = gethostbyname($host);
 	    if ($urlip == $host) {
-	       $this->reason[] = "$host does not resolve to an IP";
+	       $this->reason['httperror'] = "DNS $host does not resolve to an IP";
 		return false;
 	    } else if ($urlip) {
                 $this->checkIp($urlip,$all);
